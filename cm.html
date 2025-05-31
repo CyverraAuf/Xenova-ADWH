@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Online Code Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      margin: 0;
+      background: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .tabs {
+      display: flex;
+      background: #222;
+    }
+    .tabs button {
+      flex: 1;
+      padding: 10px;
+      background: #222;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .tabs button.active {
+      background: #444;
+    }
+    #editor {
+      flex: 1;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 16px;
+      background: #1e1e1e;
+      color: #fff;
+      width: 100%;
+      resize: none;
+      border: none;
+      outline: none;
+    }
+    .actions {
+      background: #222;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .actions button {
+      padding: 10px 20px;
+      border: none;
+      background: #0af;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+    iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tabs">
+    <button class="active" onclick="switchTab('html')">HTML</button>
+    <button onclick="switchTab('css')">CSS</button>
+    <button onclick="switchTab('js')">JavaScript</button>
+  </div>
+
+  <textarea id="editor"></textarea>
+
+  <div class="actions">
+    <button onclick="runCode()">Run ▶</button>
+  </div>
+
+  <iframe id="output"></iframe>
+
+  <script>
+    const htmlCode = `<!-- HTML Starter Code -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hello World</title>
+</head>
+<body>
+  <h1>Hello, World!</h1>
+</body>
+</html>`;
+    const cssCode = `/* CSS Starter Code */
+body {
+  background-color: lightblue;
+  font-family: sans-serif;
+}
+h1 {
+  color: darkblue;
+}`;
+    const jsCode = `// JavaScript Starter Code
+document.querySelector('h1').onclick = () => {
+  alert("You clicked the heading!");
+};`;
+
+    let codes = {
+      html: htmlCode,
+      css: cssCode,
+      js: jsCode
+    };
+    let current = 'html';
+
+    const editor = document.getElementById('editor');
+    editor.value = codes[current];
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      codes[current] = editor.value;
+      current = tab;
+      editor.value = codes[current];
+    }
+
+    function runCode() {
+      codes[current] = editor.value;
+
+      const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>${codes.css}</style>
+</head>
+<body>
+  ${codes.html}
+  <script>${codes.js}<\/script>
+</body>
+</html>`;
+      const iframe = document.getElementById('output');
+      iframe.srcdoc = html;
+    }
+  </script>
+
+</body>
+</html>
